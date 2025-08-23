@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IKA DESIGN - Commandes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .produits {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+
+    .produit {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    button {
+      background: #008CBA;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #005f73;
+    }
+
+    .panier-section {
+      background: white;
+      margin: 20px;
+      padding: 15px;
+     border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .panier-section input {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .valider {
+      background: green;
+      width: 100%;
+    }
+
+    footer {
+      background: #222;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🛍 IKA DESIGN</h1>
+    <p>Vos créations, notre passion, vous servir c'est notre devoir</p>
+  </header>
+
+  <section class="produits">
+    <div class="produit">
+      <h2>T-shirt personnalisé</h2>
+      <p>Prix : 15</p>
+      <button onclick="ajouterCommande('T-shirt personnalisé - 15')">Commander</button>
+    </div>
+    <div class="produit">
+      <h2>Portrait personnalisé numérique A3,A4,A5</h2>
+      <p>Prix : 20</p>
+      <button onclick="ajouterCommande('Portrait personnalisé - 20')">Commander</button>
+    </div>
+   <div class="produit">
+      <h2>Conception affiche, carte de visite, etc...</h2>
+      <p>Prix : 5</p>
+      <button onclick="ajouterCommande('Conception affiche, carte de visite, etc... - 5')">Commander</button>
+    </div>
+    <div class="produit">
+      <h2>Logo professionnel</h2>
+      <p>Prix : 10</p>
+      <button onclick="ajouterCommande('Logo professionnel - 10')">Commander</button>
+    </div>
+  </section>
+
+  <section class="panier-section">
+    <h2>🛒 Mon Panier</h2>
+    <ul id="panier"></ul>
+    <h3>👤 Vos informations</h3>
+    <input type="text" id="nomClient" placeholder="Votre nom complet">
+    <input type="text" id="telClient" placeholder="Votre numéro de téléphone">
+
+    <button class="valider" onclick="validerCommande()">✅ Envoyer la commande sur WhatsApp</button>
+  </section>
+
+  <footer>
+    <p>📞 Contact : +243 995 104 839 | ✉ arseneilunga123@gmail.com</p>
+  </footer>
+
+  <script>
+    let panier = [];
+    const numeroWhatsApp = "243995104839"; // Ton numéro ici
+
+    function ajouterCommande(article) {
+      panier.push(article);
+      afficherPanier();
+    }
+
+    function afficherPanier() {
+      let liste = document.getElementById("panier");
+      liste.innerHTML = "";
+      panier.forEach((item, index) => {
+        let li = document.createElement("li");
+        li.textContent = item + " ";
+
+        let btn = document.createElement("button");
+        btn.textContent = "❌";
+        btn.style.marginLeft = "10px";
+        btn.onclick = () => supprimerArticle(index);
+
+        li.appendChild(btn);
+        liste.appendChild(li);
+      });
+    }
+
+    function supprimerArticle(index) {
+      panier.splice(index, 1);
+      afficherPanier();
+    }
+
+    function validerCommande() {
+      let nom = document.getElementById("nomClient").value.trim();
+      let tel = document.getElementById("telClient").value.trim();
+
+      if (panier.length === 0) {
+        alert("Votre panier est vide !");
+        return;
+      }
+      if (nom === "" || tel === "") {
+        alert("Veuillez entrer votre nom et numéro de téléphone !");
+        return;
+      }
+
+      let message = "Nouvelle commande chez IKA DESIGN 🛍%0A";
+      panier.forEach((item, i) => {
+        message += (i+1) + ". " + item + "%0A";
+      });
+
+      message += "%0A👤 Client : " + nom;
+      message += "%0A📞 Téléphone : " + tel;
+      message += "%0A✅ Merci de confirmer votre commande !";
+
+      let url = "https://wa.me/" + numeroWhatsApp + "?text=" + message;
+      window.open(url, "_blank");
+
+      panier = [];
+      afficherPanier();
+      document.getElementById("nomClient").value = "";
+      document.getElementById("telClient").value = "";
+    }
+  </script>
+</body>
+</html>
